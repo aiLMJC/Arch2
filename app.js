@@ -1,4 +1,5 @@
 // app.js
+
 // Alt1 config
 if (!window.alt1) {
     alert("This app requires Alt1 to run!");
@@ -8,6 +9,12 @@ if (!window.alt1) {
 const collections = {
     // ... (maintain your existing collector/collection structure)
 };
+
+// Define a showError function to handle errors
+function showError(message) {
+    // You can extend this function to update the UI with error messages if needed.
+    alert(message);
+}
 
 // Scanner logic
 async function scanCollections() {
@@ -19,11 +26,11 @@ async function scanCollections() {
             showError("Open collector interface first!");
             return;
         }
-
         const collectorName = alt1.getRegionText(win, [50, 80, 300, 30]);
-        const collections = detectCollections(win);
+        // Rename the local variable to avoid shadowing the global "collections"
+        const detectedCollections = detectCollections(win);
         
-        updateUI(collectorName, collections);
+        updateUI(collectorName, detectedCollections);
     } finally {
         alt1.overlayUnlockscreen();
     }
@@ -33,10 +40,10 @@ function detectCollections(win) {
     const results = [];
     const progressRects = [
         [50, 120, 100, 30],  // Collection 1 position
-        [50, 160, 100, 30],  // Collection 2 position
+        [50, 160, 100, 30]   // Collection 2 position
         // ... add more positions as needed
     ];
-
+    
     for (const rect of progressRects) {
         const text = alt1.getRegionText(win, rect);
         const match = text.match(/(\d+)\/(\d+)/);
@@ -53,7 +60,7 @@ function detectCollections(win) {
 function updateUI(collectorName, collections) {
     const container = document.getElementById("collector-list");
     container.innerHTML = "";
-
+    
     const card = document.createElement("div");
     card.className = "collector-card";
     
@@ -61,7 +68,7 @@ function updateUI(collectorName, collections) {
     title.className = "collector-name";
     title.textContent = collectorName;
     card.appendChild(title);
-
+    
     collections.forEach((col, index) => {
         const div = document.createElement("div");
         div.className = "collection-item";
@@ -77,7 +84,7 @@ function updateUI(collectorName, collections) {
         div.appendChild(progressSpan);
         card.appendChild(div);
     });
-
+    
     container.appendChild(card);
 }
 
