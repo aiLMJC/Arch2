@@ -8,6 +8,10 @@
   "category": "Tools",
   "type": "app",
   "permissions": {
+     "permissions": [
+        "overlay",
+        "screen",
+        "pixel"
     "capture": true
   }
 }
