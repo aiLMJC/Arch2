@@ -1,9 +1,9 @@
 {
   "name": "Archaeology Collection Tracker",
   "desc": "Tracks artifact collection progress",
-  "author": "Your Name",
+  "author": "OML",
   "version": "1.0",
   "runtime": "beta",
   "icon": "icon.png",
-  "appUrl": "/index.html"
+  "appUrl": "https://github.com/aiLMJC/Arch2/blob/main/index.html"
 }
