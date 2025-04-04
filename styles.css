@@ -1,4 +1,3 @@
-/* styles.css */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #1a1a1a;
@@ -12,8 +11,14 @@ body {
     margin-bottom: 25px;
 }
 
-#scan-btn {
-    background-color: #4CAF50;
+.toolbar {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#scan-btn, #reset-btn {
     border: none;
     padding: 12px 24px;
     color: white;
@@ -21,6 +26,9 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
+
+#scan-btn { background-color: #4CAF50; }
+#reset-btn { background-color: #f44336; }
 
 .collector-card {
     background-color: #2d2d2d;
