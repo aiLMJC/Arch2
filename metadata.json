@@ -1,0 +1,9 @@
+{
+  "name": "Archaeology Collection Tracker",
+  "desc": "Tracks artifact collection progress",
+  "author": "Your Name",
+  "version": "1.0",
+  "runtime": "beta",
+  "icon": "icon.png",
+  "appUrl": "/index.html"
+}
