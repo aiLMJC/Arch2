@@ -1,13 +1,34 @@
 {
-  "pluginInfo": {
     "name": "Archaeology Collection Tracker",
-    "version": "1.0",
-    "description": "An Alt1 plugin that scans the Archaeology Collector interface to update the UI with collection progress data. Includes HTML, CSS, and JavaScript files packaged for import.",
-    "entry": "https://github.com/aiLMJC/Arch2/blob/main/index.html"
-  },
-  "files": {
-    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>Archaeology Collection Tracker</title>\n    <script src=\"./alt1.min.js\"></script>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <div class=\"header\">\n        <h1>Archaeology Collections</h1>\n        <button id=\"scan-btn\">Scan Interface</button>\n    </div>\n    <div id=\"collector-list\"></div>\n    <script src=\"app.js\"></script>\n</body>\n</html>",
-    "styles.css": "body {\n    font-family: 'Segoe UI', Arial, sans-serif;\n    background-color: #1a1a1a;\n    color: #ffffff;\n    margin: 0;\n    padding: 20px;\n}\n\n.header {\n    text-align: center;\n    margin-bottom: 25px;\n}\n\n#scan-btn {\n    background-color: #4CAF50;\n    border: none;\n    padding: 12px 24px;\n    color: white;\n    border-radius: 4px;\n    cursor: pointer;\n    font-size: 16px;\n}\n\n.collector-card {\n    background-color: #2d2d2d;\n    border-radius: 8px;\n    padding: 15px;\n    margin: 10px 0;\n}\n\n.collector-name {\n    color: #4CAF50;\n    margin: 0 0 10px 0;\n}\n\n.collection-item {\n    display: flex;\n    justify-content: space-between;\n    padding: 8px 0;\n    border-bottom: 1px solid #404040;\n}\n\n.progress-text {\n    color: #888;\n    font-size: 0.9em;\n}",
-    "app.js": "// app.js\n\n// Alt1 config\nif (!window.alt1) {\n    alert(\"This app requires Alt1 to run!\");\n}\n\n// Collection data structure\nconst collections = {\n    // ... (maintain your existing collector/collection structure)\n};\n\n// Define a showError function to display errors\nfunction showError(message) {\n    alert(message);\n}\n\n// Scanner logic\nasync function scanCollections() {\n    if (!alt1.overlayLockscreen()) return;\n    \n    try {\n        const win = alt1.getActiveWindow();\n        if (!win || !win.title.includes(\"Archaeology Collector\")) {\n            showError(\"Open collector interface first!\");\n            return;\n        }\n        \n        const collectorName = alt1.getRegionText(win, [50, 80, 300, 30]);\n        const detectedCollections = detectCollections(win);\n        \n        updateUI(collectorName, detectedCollections);\n    } finally {\n        alt1.overlayUnlockscreen();\n    }\n}\n\nfunction detectCollections(win) {\n    const results = [];\n    const progressRects = [\n        [50, 120, 100, 30],  // Collection 1 position\n        [50, 160, 100, 30]   // Collection 2 position\n        // ... add more positions as needed\n    ];\n    \n    for (const rect of progressRects) {\n        const text = alt1.getRegionText(win, rect);\n        const match = text.match(/(\\d+)\\/(\\d+)/);\n        if (match) {\n            results.push({\n                current: parseInt(match[1]),\n                required: parseInt(match[2])\n            });\n        }\n    }\n    return results;\n}\n\nfunction updateUI(collectorName, collections) {\n    const container = document.getElementById(\"collector-list\");\n    container.innerHTML = \"\";\n    \n    const card = document.createElement(\"div\");\n    card.className = \"collector-card\";\n    \n    const title = document.createElement(\"h2\");\n    title.className = \"collector-name\";\n    title.textContent = collectorName;\n    card.appendChild(title);\n    \n    collections.forEach((col, index) => {\n        const div = document.createElement(\"div\");\n        div.className = \"collection-item\";\n        \n        const nameSpan = document.createElement(\"span\");\n        nameSpan.textContent = `Collection ${index + 1}`;\n        \n        const progressSpan = document.createElement(\"span\");\n        progressSpan.className = \"progress-text\";\n        progressSpan.textContent = `${col.current}/${col.required}`;\n        \n        div.appendChild(nameSpan);\n        div.appendChild(progressSpan);\n        card.appendChild(div);\n    });\n    \n    container.appendChild(card);\n}\n\n// Event listeners\ndocument.getElementById(\"scan-btn\").addEventListener(\"click\", scanCollections);\nalt1.events.on(\"alt1pressed\", scanCollections);\n\n// Initial setup\nif (alt1.permissionPixel) {\n    alt1.requestPermission();\n}\n"
-  }
+    "type": "app",
+    "version": "1.0.2",
+    "author": "aiLMJC",
+    "description": "Tracks archaeology collection progress through interface scanning",
+    "icon": "icon.png",
+    "repo": "",
+    "depends": [],
+    "install": {
+        "type": "folder",
+        "files": [
+            "index.html",
+            "app.js",
+            "styles.css",
+            "metadata.json",
+            "alt1.min.js"
+        ]
+    },
+    "runtime": {
+        "main": "index.html",
+        "permissions": [
+            "overlay",
+            "screen",
+            "pixel"
+        ],
+        "hotkey": "alt+1",
+        "scaling": 1.0
+    },
+    "target": {
+        "game": "runescape",
+        "skill": "archaeology"
+    }
 }
