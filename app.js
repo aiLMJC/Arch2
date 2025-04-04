@@ -1,98 +1,82 @@
-// app.js
-
-// Alt1 config
 if (!window.alt1) {
     alert("This app requires Alt1 to run!");
 }
 
-// Collection data structure
 const collections = {
-    // ... (maintain your existing collector/collection structure)
+    "Art Critic Jacques": {
+        "Anarchic Abstraction": 5,
+        "Radiant Renaissance": 4,
+        "Imperial Impressionism": 3
+    },
+    // ... (keep your existing collection structure)
 };
 
-// Define a showError function to handle errors
-function showError(message) {
-    // You can extend this function to update the UI with error messages if needed.
-    alert(message);
-}
+let collectedData = JSON.parse(localStorage.getItem('arch-collections')) || {};
 
-// Scanner logic
 async function scanCollections() {
     if (!alt1.overlayLockscreen()) return;
     
     try {
         const win = alt1.getActiveWindow();
-        if (!win || !win.title.includes("Archaeology Collector")) {
-            showError("Open collector interface first!");
+        if (!win?.title.includes("Archaeology Collector")) {
+            alert("Open collector interface first!");
             return;
         }
-        const collectorName = alt1.getRegionText(win, [50, 80, 300, 30]);
-        // Rename the local variable to avoid shadowing the global "collections"
-        const detectedCollections = detectCollections(win);
+
+        const collector = getCollectorName(win);
+        const progress = detectCollections(win);
         
-        updateUI(collectorName, detectedCollections);
+        collectedData[collector] = progress;
+        localStorage.setItem('arch-collections', JSON.stringify(collectedData));
+        updateUI();
     } finally {
         alt1.overlayUnlockscreen();
     }
 }
 
-function detectCollections(win) {
-    const results = [];
-    const progressRects = [
-        [50, 120, 100, 30],  // Collection 1 position
-        [50, 160, 100, 30]   // Collection 2 position
-        // ... add more positions as needed
-    ];
-    
-    for (const rect of progressRects) {
-        const text = alt1.getRegionText(win, rect);
-        const match = text.match(/(\d+)\/(\d+)/);
-        if (match) {
-            results.push({
-                current: parseInt(match[1]),
-                required: parseInt(match[2])
-            });
-        }
-    }
-    return results;
+function getCollectorName(win) {
+    return alt1.getRegionText(win, [50, 80, 300, 30]).trim();
 }
 
-function updateUI(collectorName, collections) {
+function detectCollections(win) {
+    return [
+        [50, 120, 100, 30],
+        [50, 160, 100, 30]
+    ].map(rect => {
+        const text = alt1.getRegionText(win, rect);
+        const match = text?.match(/(\d+)\/(\d+)/);
+        return match ? {
+            current: parseInt(match[1]),
+            required: parseInt(match[2])
+        } : null;
+    }).filter(Boolean);
+}
+
+function updateUI() {
     const container = document.getElementById("collector-list");
     container.innerHTML = "";
     
-    const card = document.createElement("div");
-    card.className = "collector-card";
-    
-    const title = document.createElement("h2");
-    title.className = "collector-name";
-    title.textContent = collectorName;
-    card.appendChild(title);
-    
-    collections.forEach((col, index) => {
-        const div = document.createElement("div");
-        div.className = "collection-item";
-        
-        const nameSpan = document.createElement("span");
-        nameSpan.textContent = `Collection ${index + 1}`;
-        
-        const progressSpan = document.createElement("span");
-        progressSpan.className = "progress-text";
-        progressSpan.textContent = `${col.current}/${col.required}`;
-        
-        div.appendChild(nameSpan);
-        div.appendChild(progressSpan);
-        card.appendChild(div);
+    Object.entries(collectedData).forEach(([collector, entries]) => {
+        const card = document.createElement("div");
+        card.className = "collector-card";
+        card.innerHTML = `
+            <h2 class="collector-name">${collector}</h2>
+            ${entries.map((e, i) => `
+                <div class="collection-item">
+                    <span>Collection ${i+1}</span>
+                    <span class="progress-text">${e.current}/${e.required}</span>
+                </div>
+            `).join("")}
+        `;
+        container.appendChild(card);
     });
-    
-    container.appendChild(card);
 }
 
-// Event listeners
 document.getElementById("scan-btn").addEventListener("click", scanCollections);
-alt1.events.on("alt1pressed", scanCollections);
+document.getElementById("reset-btn").addEventListener("click", () => {
+    localStorage.removeItem('arch-collections');
+    collectedData = {};
+    updateUI();
+});
 
-// Initial setup
-if (alt1.permissionPixel) {
-    alt1.requestPermission();
-}
+if (alt1.permissionPixel) alt1.requestPermission();
