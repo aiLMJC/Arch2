@@ -1,9 +1,13 @@
 {
-  "name": "Archaeology Collection Tracker",
-  "desc": "Tracks artifact collection progress",
-  "author": "OML",
-  "version": "1.0",
-  "runtime": "beta",
-  "icon": "icon.png",
-  "appUrl": "https://github.com/aiLMJC/Arch2/blob/main/index.html"
+  "name": "Archaeology Collection Log Helper",
+  "description": "Helps track collections and collectors for the Archaeology skill.",
+  "version": "1.0.0",
+  "authors": ["aiLMJC"],
+  "entry": "index.html",
+  "icon": "public/icon.png",
+  "category": "Tools",
+  "type": "app",
+  "permissions": {
+    "capture": true
+  }
 }
