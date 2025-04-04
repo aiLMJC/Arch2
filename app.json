@@ -3,7 +3,7 @@
     "name": "Archaeology Collection Tracker",
     "version": "1.0",
     "description": "An Alt1 plugin that scans the Archaeology Collector interface to update the UI with collection progress data. Includes HTML, CSS, and JavaScript files packaged for import.",
-    "entry": "index.html"
+    "entry": "https://github.com/aiLMJC/Arch2/blob/main/index.html"
   },
   "files": {
     "index.html": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>Archaeology Collection Tracker</title>\n    <script src=\"./alt1.min.js\"></script>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <div class=\"header\">\n        <h1>Archaeology Collections</h1>\n        <button id=\"scan-btn\">Scan Interface</button>\n    </div>\n    <div id=\"collector-list\"></div>\n    <script src=\"app.js\"></script>\n</body>\n</html>",
